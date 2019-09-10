@@ -1,0 +1,151 @@
+BDD (CUCUMBER) WITH ECLIPSE
+------------------------
+1) INSTALL JAVA AND ECLIPSE
+
+2) CREATE MAVEN PROJECT 
+
+3) UPDATE POM.XML WITH REQUIRED CUCUMBER,SELENIUM,JUNIT DEPENDENCIES FROM MVN REPOSITORY
+
+DEPENDIENCIES
+-------------
+1. cucumber-java
+2. cucumber-core
+3. cucumber-html
+4. cucumber-junit
+5. cucumber-jvm-deps
+6. cobertura
+7. cucumber-reporting
+8. gherkin
+9. hamcrest-core
+10. selenium-java
+11. junit
+12. tools (com.sun)
+
+4) MARKETPLACE ====> TYPE CUCUMBER
+
+	I) NATURAL PLUGIN
+	II) CUCUMBER ECLIPSE PLUGIN
+
+
+
+OrangeHRM cucumber-maven project
+-----------------------------
+1) feature folder on project level
+	----to maintain all feature files
+
+2) stepdefination package in src/test/java
+	----to maintain all stepdefination classes to maintain glue code/selenium code
+
+3) testrunner package in src/test/java
+	----to maintain all runnable junit classes
+
+
+
+step1) create a feature file in feature folder
+		rightclick on feature folder-->new-->File--> anyname.feature
+step2) create a class in stepdefination class
+step3) create a runner class and add @RunWith(Cucumber.class), @CucucmberOptions(-----)
+step4) run the runner class
+step5) add all unimplemented methods and write the script
+step6) run the runner class again 
+
+Example
+========================================================
+orangeHRM.feature
+------------------
+
+Feature: orangeHRM Logo
+
+Scenario: verify orangeHRM logo
+
+Given user open the browser
+When user pass the url "https://opensource-demo.orangehrmlive.com/"
+Then system should display orangeHrm logo
+Then user close the browser
+
+OrangeHRM.class
+-----------------
+
+package stepdefinations;
+
+import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+public class OrangeHrm {
+
+	public WebDriver driver;
+
+	@Given("user open the browser")
+	public void user_open_the_browser() {
+
+		System.setProperty("webdriver.chrome.driver",
+				"C:\\Users\\Mindq\\Desktop\\chromedriver_win32 (1)\\chromedriver.exe");
+		driver = new ChromeDriver();
+		driver.manage().window().maximize();
+
+	}
+
+	@When("user pass the url {string}")
+	public void user_pass_the_url(String string) throws Throwable {
+
+		driver.get("https://opensource-demo.orangehrmlive.com");
+		Thread.sleep(2000);
+
+	}
+
+	@Then("system should display orangeHrm logo")
+	public void system_should_display_orangeHrm_logo() {
+
+		boolean b = driver.findElement(By.xpath("//*[@id=\"divLogo\"]/img")).isDisplayed();
+		Assert.assertEquals(true, b);
+
+	}
+
+	@Then("user close the browser")
+	public void user_close_the_browser() {
+
+		driver.close();
+
+	}
+
+}
+
+
+Runner.class
+----------------
+
+package testrunner;
+
+import org.junit.runner.RunWith;
+
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(features = "C:\\Users\\Mindq\\Desktop\\cucumber\\OrangeHRM\\features\\orangeHRM.feature",
+				glue = "stepdefinations",
+				plugin = {"pretty","html:target/cucumber-html-report","json:target/test.json"},
+				monochrome = true )
+
+
+public class Runner {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
